@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineStrike — Pre-Alpha Tester Sign-Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:  #ff2d78;
+    --amber: #ffaa00;
+    --cyan:  #00f5ff;
+    --green: #39ff14;
+    --bg:    #050508;
+    --surface: #0a0b10;
+    --border: #1e2030;
+    --text: #c8cfe0;
+    --dim: #555c78;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, #050508 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .studio-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: #fff;
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo .mine { color: var(--cyan); }
+  .logo .strike { color: var(--pink); }
+
+  .logo::after {
+    content: 'MINESTRIKE';
+    position: absolute;
+    inset: 0;
+    color: var(--cyan);
+    filter: blur(18px);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .version-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 4px 12px;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .version-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  .tagline {
+    margin-top: 16px;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px 36px 40px;
+    position: relative;
+    animation: fadeUp 0.9s ease 0.2s both;
+  }
+
+  /* Corner decorations */
+  .card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: var(--cyan);
+    border-style: solid;
+  }
+  .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+  .card-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title::before {
+    content: '//';
+    color: var(--dim);
+  }
+
+  /* ── FORM FIELDS ── */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .field label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--dim);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field label .req {
+    color: var(--pink);
+    font-size: 12px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    background: #0d0e15;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  .field select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300f5ff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 1px var(--cyan), 0 0 16px rgba(0,245,255,0.08);
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #2a2d3d;
+  }
+
+  /* Two-col row */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Checkboxes */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .check-item:hover {
+    border-color: #2a2d3d;
+    background: #0d0e15;
+  }
+
+  .check-item input[type="checkbox"] {
+    display: none;
+  }
+
+  .check-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--dim);
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+
+  .check-item input:checked ~ .check-label .check-box,
+  .check-item:has(input:checked) .check-box {
+    border-color: var(--cyan);
+    background: var(--cyan);
+  }
+
+  .check-item:has(input:checked) .check-box::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--bg);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+
+  .check-item:has(input:checked) {
+    border-color: rgba(0,245,255,0.3);
+    background: rgba(0,245,255,0.04);
+  }
+
+  .check-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+  }
+
+  .mode-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+    position: relative;
+  }
+
+  /* ── SYSTEM ACCESS SECTION ── */
+  .sys-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Radio row for experience */
+  .radio-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .radio-item {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .radio-item input[type="radio"] { display: none; }
+
+  .radio-item label {
+    display: block;
+    text-align: center;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    color: var(--dim);
+  }
+
+  .radio-item input:checked + label {
+    border-color: var(--pink);
+    color: var(--pink);
+    background: rgba(255,45,120,0.06);
+    box-shadow: 0 0 12px rgba(255,45,120,0.1);
+  }
+
+  .radio-item label:hover { border-color: #2a2d3d; color: var(--text); }
+
+  /* ── CONSENT ── */
+  .consent-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    background: #0d0e15;
+  }
+
+  .consent-wrap input[type="checkbox"] { display: none; }
+
+  .consent-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--dim);
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+
+  .consent-wrap:has(input:checked) .consent-box {
+    border-color: var(--green);
+    background: var(--green);
+  }
+
+  .consent-wrap:has(input:checked) .consent-box::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--bg);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+
+  .consent-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--dim);
+    cursor: pointer;
+  }
+
+  .consent-text span { color: var(--cyan); }
+
+  /* ── SUBMIT ── */
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 1px solid var(--pink);
+    color: var(--pink);
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.25s, box-shadow 0.25s;
+    margin-top: 4px;
+  }
+
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--pink);
+    transform: translateX(-101%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    z-index: 0;
+  }
+
+  .submit-btn:hover::before { transform: translateX(0); }
+  .submit-btn:hover {
+    color: var(--bg);
+    box-shadow: 0 0 30px rgba(255,45,120,0.3);
+  }
+
+  .submit-btn span { position: relative; z-index: 1; }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 36px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .success-screen.visible { display: block; }
+  .success-screen .form-content { display: none; }
+
+  .success-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .success-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px rgba(57,255,20,0.4);
+  }
+
+  .success-msg {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--dim);
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .success-callsign {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 8px 18px;
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    animation: fadeUp 1s ease 0.4s both;
+  }
+
+  .footer a { color: var(--dim); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Scanline flicker on card */
+  .card {
+    animation: fadeUp 0.9s ease 0.2s both;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .card { padding: 24px 20px 28px; }
+    .field-row { grid-template-columns: 1fr; }
+    .checkbox-grid { grid-template-columns: 1fr; }
+    .radio-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="studio-tag">Firefly Cult Studios</div>
+    <div class="logo">
+      <span class="mine">MINE</span><span class="strike">STRIKE</span>
+    </div>
+    <div style="margin-top:14px;">
+      <span class="version-badge">v0.5 Pre-Alpha</span>
+    </div>
+    <div class="tagline">Pre-Alpha Tester Registration</div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="card" id="formCard">
+
+    <div class="card-title">Operative Enlistment</div>
+
+    <form class="field-group" id="signupForm" novalidate action="https://formspree.io/f/xreyjkrn" method="POST">
+
+      <!-- Name + Callsign -->
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" name="fullname" placeholder="John Doe" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label>Callsign <span class="req">*</span></label>
+          <input type="text" name="callsign" placeholder="e.g. Gh0stWire" required maxlength="24">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" name="email" placeholder="you@domain.com" required autocomplete="email">
+      </div>
+
+      <!-- Platform note -->
+      <div class="field">
+        <label>Platform</label>
+        <select name="platform" disabled style="cursor:not-allowed; opacity:0.5;">
+          <option>Windows x64 (only platform in pre-alpha)</option>
+        </select>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Mode interest -->
+      <div class="field">
+        <div class="sys-label">Game Modes — Select all you'd like to test</div>
+        <div class="checkbox-grid">
+          <label class="check-item">
+            <input type="checkbox" name="modes" value="standard">
+            <span class="check-label">
+              <span class="check-box"></span>
+              <span>Standard <br><span class="mode-tag" style="color:var(--cyan)">2–4 PLAYERS</span></span>
+            </span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="modes" value="collapse">
+            <span class="check-label">
+              <span class="check-box"></span>
+              <span>The Collapse <br><span class="mode-tag" style="color:var(--pink)">UP TO 30</span></span>
+            </span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="modes" value="darkcircuit">
+            <span class="check-label">
+              <span class="check-box"></span>
+              <span>Dark Circuit <br><span class="mode-tag" style="color:var(--amber)">8 / 16 BRACKET</span></span>
+            </span>
+          </label>
+          <label class="check-item">
+            <input type="checkbox" name="modes" value="riskprotocol">
+            <span class="check-label">
+              <span class="check-box"></span>
+              <span>Risk Protocol <br><span class="mode-tag" style="color:var(--green)">SCORE ATTACK</span></span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Experience -->
+      <div class="field">
+        <div class="sys-label">Minesweeper Experience</div>
+        <div class="radio-row">
+          <div class="radio-item">
+            <input type="radio" name="experience" id="exp0" value="none">
+            <label for="exp0">None</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="experience" id="exp1" value="casual">
+            <label for="exp1">Casual</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="experience" id="exp2" value="regular">
+            <label for="exp2">Regular</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="experience" id="exp3" value="veteran">
+            <label for="exp3">Veteran</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- How did you hear -->
+      <div class="field">
+        <label>How did you hear about MineStrike?</label>
+        <select name="referral">
+          <option value="" disabled selected>— Select —</option>
+          <option value="friend">Friend / Word of mouth</option>
+          <option value="discord">Discord</option>
+          <option value="reddit">Reddit</option>
+          <option value="twitter">Twitter / X</option>
+          <option value="itch">itch.io</option>
+          <option value="youtube">YouTube</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Notes -->
+      <div class="field">
+        <label>Anything else? (optional)</label>
+        <textarea name="notes" placeholder="Testing hardware specs, availability, or any questions..."></textarea>
+      </div>
+
+      <!-- Consent -->
+      <label class="consent-wrap">
+        <input type="checkbox" name="consent" id="consent" required>
+        <span class="consent-box"></span>
+        <span class="consent-text">
+          I understand MineStrike is in <span>pre-alpha</span> — bugs, crashes, and incomplete features are expected. I agree to provide honest feedback and keep unreleased details <span>confidential</span>.
+        </span>
+      </label>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn"><span>⬡ &nbsp;Request Access</span></button>
+
+    </form>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">◈</div>
+      <div class="success-title">Access Requested</div>
+      <p class="success-msg">
+        Your enlistment has been logged, operative.<br>
+        Firefly Cult Studios will be in touch via email when your slot opens.
+      </p>
+      <div class="success-callsign" id="successCallsign"></div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    © 2026 Firefly Cult Studios &nbsp;·&nbsp; MineStrike v0.5 Pre-Alpha &nbsp;·&nbsp; Windows Only
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById('signupForm');
+  const successScreen = document.getElementById('successScreen');
+
+  const FORMSPREE_URL   = 'https://formspree.io/f/xreyjkrn';
+  const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzZYIYRg-Lu7xswEWJ3Q1cMz62lQ3LQ2yGRDZ835DNTOoJTxOumijQnluvFQ6mV8fUNcg/exec';
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const name     = form.fullname.value.trim();
+    const callsign = form.callsign.value.trim();
+    const email    = form.email.value.trim();
+    const consent  = form.consent.checked;
+
+    // Validation
+    if (!name || !callsign || !email || !consent) {
+      [form.fullname, form.callsign, form.email].forEach(el => {
+        if (!el.value.trim()) shakeField(el);
+      });
+      if (!consent) shakeField(document.querySelector('.consent-wrap'));
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      shakeField(form.email);
+      return;
+    }
+
+    // Gather checked modes
+    const modes = Array.from(form.querySelectorAll('input[name="modes"]:checked'))
+                       .map(cb => cb.value).join(', ') || 'None selected';
+
+    const experience = form.experience ? (form.querySelector('input[name="experience"]:checked')?.value || '') : '';
+    const referral   = form.referral.value || '';
+    const notes      = form.notes.value.trim();
+
+    const payload = { fullname: name, callsign, email, modes, experience, referral, notes };
+
+    // Disable button while submitting
+    const btn = form.querySelector('.submit-btn');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Transmitting…';
+
+    try {
+      // Fire both requests in parallel
+      await Promise.all([
+
+        // Formspree — sends email notification
+        fetch(FORMSPREE_URL, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }),
+
+        // Google Apps Script — writes row to Sheet
+        fetch(GOOGLE_SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+
+      ]);
+    } catch (err) {
+      // Network error — still show success (data may have gone through)
+      console.warn('Submission warning:', err);
+    }
+
+    // Show success screen
+    form.style.display = 'none';
+    const callsignEl = document.getElementById('successCallsign');
+    callsignEl.textContent = `OPERATIVE: ${callsign.toUpperCase()}`;
+    successScreen.classList.add('visible');
+  });
+
+  function shakeField(el) {
+    el.style.borderColor = 'var(--pink)';
+    el.style.boxShadow = '0 0 0 1px var(--pink)';
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    }, 1200);
+  }
+</script>
+</body>
+</html>
