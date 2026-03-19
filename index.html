@@ -738,6 +738,37 @@
     box-shadow: 0 0 0 1px rgba(255,45,120,0.25) !important;
   }
 
+  .duplicate-alert {
+    display: none;
+    margin-top: 12px;
+    padding: 16px 20px;
+    background: rgba(255,45,120,0.06);
+    border: 1px solid rgba(255,45,120,0.35);
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .duplicate-alert-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--pink);
+    margin-bottom: 8px;
+  }
+
+  .duplicate-alert-msg {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .duplicate-alert-msg em {
+    font-style: normal;
+    color: var(--cyan);
+  }
+
   /* ── ANIMATIONS ── */
   @keyframes fadeDown {
     from { opacity: 0; transform: translateY(-24px); }
@@ -961,6 +992,13 @@
       <button type="submit" class="submit-btn" id="submitBtn">
         <span id="submitLabel">⬡ &nbsp;Request Access</span>
       </button>
+      <div class="duplicate-alert" id="duplicateAlert">
+        <div class="duplicate-alert-title">⬡ &nbsp;Already Enlisted</div>
+        <div class="duplicate-alert-msg">
+          That email address is already registered for the programme.<br>
+          Check your inbox, or contact us at <em>fireflycultstudios@gmail.com</em> if you think this is a mistake.
+        </div>
+      </div>
     </div>
 
   </form>
@@ -1021,29 +1059,32 @@
     submitLabel.textContent = 'Transmitting…';
 
     try {
-      // Fire both integrations in parallel
-      await Promise.all([
+      const supabaseRes = await fetch(`${SUPABASE_URL}/rest/v1/signups`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
 
-        // Formspree — triggers email notification to you
-        fetch(FORMSPREE_URL, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }),
+      if (supabaseRes.status === 409) {
+        // Duplicate email
+        submitBtn.disabled = false;
+        submitLabel.textContent = '⬡ \u00a0Request Access';
+        document.getElementById('duplicateAlert').style.display = 'block';
+        return;
+      }
 
-        // Supabase — inserts a row into the signups table
-        fetch(`${SUPABASE_URL}/rest/v1/signups`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify(payload)
-        })
+      // Formspree notification (fire and forget)
+      fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(err => console.warn('Formspree warning:', err));
 
-      ]);
     } catch (err) {
       console.warn('Submission warning:', err);
     }
